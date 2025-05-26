@@ -33,7 +33,7 @@ func Read() Config {
 	return config
 }
 
-func SetUser(user string) {
+func SetUser(user string) string {
 	config := Read()
 	config.CurrUser = &user
 
@@ -48,9 +48,13 @@ func SetUser(user string) {
 	}
 
 	dataToWrite, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
 	if err = os.Truncate(configPath, 0); err != nil {
 		log.Fatal(err)
 	}
 
 	os.WriteFile(configPath, dataToWrite, 0644)
+	return string(dataToWrite)
 }
